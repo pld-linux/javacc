@@ -4,7 +4,7 @@ Version:	4.0
 Release:	1
 License:	BSD
 Source0:	https://javacc.dev.java.net/files/documents/17/26783/%{name}-%{version}src.tar.gz
-# Source0-md5:	62910e742042d491c7b2f443c8399213
+# Source0-md5:	bf91835dc1bb4821f4b26fd552b43c8d
 Source1:	%{name}
 Source2:	jjdoc
 Source3:	jjtree
