@@ -1,7 +1,7 @@
 Summary:	A parser/scanner generator for java
 Name:		javacc
 Version:	4.0
-Release:	0.1
+Release:	1
 License:	BSD
 Source0:	https://javacc.dev.java.net/files/documents/17/26783/%{name}-%{version}src.tar.gz
 # Source0-md5:	62910e742042d491c7b2f443c8399213
@@ -50,6 +50,9 @@ cp %{SOURCE3} jjtree
 mv www/doc .
 
 %build
+required_jars="junit"
+export CLASSPATH=$(/usr/bin/build-classpath $required_jars)
+
 %ant \
   -Dversion=%{version} \
   jar
