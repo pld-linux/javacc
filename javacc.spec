@@ -1,4 +1,5 @@
-Summary:	A parser/scanner generator for java
+Summary:	A parser/scanner generator for Java
+Summary(pl.UTF-8):	Generator analizatorów/skanerów dla Javy
 Name:		javacc
 Version:	4.0
 Release:	1
@@ -28,19 +29,37 @@ generator itself, JavaCC provides other standard capabilities related
 to parser generation such as tree building (via a tool called JJTree
 included with JavaCC), actions, debugging, etc.
 
+%description -l pl.UTF-8
+Java Compiler Compiler (JavaCC) to najbardziej popularny generator
+analizatorów do używania w aplikacjach Javy. Generator analizatorów to
+narzędzie czytające specyfikację gramatyki i przekształcające ją na
+program w Javie rozpoznający dopasowania do gramatyki. Oprócz samego
+generatora analizatorów JavaCC udostępnia inne standardowe możliwości
+związane z generowaniem analizatorów, takie jak budowanie drzewa
+(poprzez narzędzie o nazwie JJTree dołączone do JavaCC), akcje,
+diagnostykę itp.
+
 %package manual
-Summary:	Manual for %{name}
+Summary:	Manual for JavaCC
+Summary(pl.UTF-8):	Podręcznik do JavaCC
 Group:		Documentation
 
 %description manual
-Manual for %{name}.
+Manual for JavaCC.
+
+%description manual -l pl.UTF-8
+Podręcznik do JavaCC.
 
 %package demo
-Summary:	Examples for %{name}
+Summary:	Examples for JavaCC
+Summary(pl.UTF-8):	Przykłady do JavaCC
 Group:		Documentation
 
 %description demo
-Examples for %{name}.
+Examples for JavaCC.
+
+%description demo -l pl.UTF-8
+Przykłady do JavaCC.
 
 %prep
 %setup -q -n %{name}
@@ -54,8 +73,8 @@ required_jars="junit"
 export CLASSPATH=$(/usr/bin/build-classpath $required_jars)
 
 %ant \
-  -Dversion=%{version} \
-  jar
+	-Dversion=%{version} \
+	jar
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -72,10 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%{_javadir}/*.jar
 %doc LICENSE README
-%defattr(0755,root,root,0755)
 %attr(755,root,root) %{_bindir}/*
+%{_javadir}/*.jar
 
 %files manual
 %defattr(644,root,root,755)
@@ -83,4 +101,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files demo
 %defattr(644,root,root,755)
-%{_datadir}/%{name}/*
+%{_datadir}/%{name}
