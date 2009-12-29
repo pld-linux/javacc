@@ -13,6 +13,7 @@ Group:		Development/Languages/Java
 URL:		https://javacc.dev.java.net/
 BuildRequires:	/bin/bash
 BuildRequires:	ant
+BuildRequires:	glibc-localedb-all
 BuildRequires:	jpackage-utils
 BuildRequires:	junit >= 3.8.1
 BuildRequires:	rpmbuild(macros) >= 1.300
@@ -70,6 +71,7 @@ mv www/doc .
 
 %build
 required_jars="junit"
+export LC_ALL=en_US
 export CLASSPATH=$(/usr/bin/build-classpath $required_jars)
 
 %ant \
