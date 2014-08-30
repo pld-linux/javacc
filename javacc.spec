@@ -7,7 +7,7 @@ Summary:	A parser/scanner generator for Java
 Summary(pl.UTF-8):	Generator analizatorów/skanerów dla Javy
 Name:		javacc
 Version:	5.0
-Release:	1
+Release:	0.1
 License:	BSD
 Group:		Development/Languages/Java
 Source0:	http://java.net/projects/javacc/downloads/download/%{name}-%{version}src.tar.gz
