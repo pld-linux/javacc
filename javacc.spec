@@ -21,7 +21,7 @@ BuildRequires:	/bin/bash
 BuildRequires:	ant
 BuildRequires:	glibc-localedb-all
 BuildRequires:	java-junit >= 3.8.1
-%{?without_bootstrap:BuildRequires:	javacc}
+%{!?with_bootstrap:BuildRequires:	javacc}
 BuildRequires:	jpackage-utils
 BuildRequires:	rpmbuild(macros) >= 1.300
 Requires:	jpackage-utils >= 1.5
