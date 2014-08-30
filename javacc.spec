@@ -1,21 +1,27 @@
+#
+#
+# Conditional build:
+%bcond_with	bootstrap		# bootstrap build
+
 Summary:	A parser/scanner generator for Java
 Summary(pl.UTF-8):	Generator analizatorów/skanerów dla Javy
 Name:		javacc
-Version:	4.0
+Version:	5.0
 Release:	1
 License:	BSD
-Source0:	https://javacc.dev.java.net/files/documents/17/26783/%{name}-%{version}src.tar.gz
-# Source0-md5:	bf91835dc1bb4821f4b26fd552b43c8d
+Group:		Development/Languages/Java
+Source0:	http://java.net/projects/javacc/downloads/download/%{name}-%{version}src.tar.gz
+# Source0-md5:	871d78a2a5859c2eebc712c1f8135be5
 Source1:	%{name}
 Source2:	jjdoc
 Source3:	jjtree
-Group:		Development/Languages/Java
+Patch0:		build.xml.patch
 URL:		https://javacc.dev.java.net/
 BuildRequires:	/bin/bash
 BuildRequires:	ant
 BuildRequires:	glibc-localedb-all
+BuildRequires:	java-junit >= 3.8.1
 BuildRequires:	jpackage-utils
-BuildRequires:	junit >= 3.8.1
 BuildRequires:	rpmbuild(macros) >= 1.300
 Requires:	jpackage-utils >= 0:1.5
 BuildArch:	noarch
@@ -63,30 +69,55 @@ Examples for JavaCC.
 Przykłady do JavaCC.
 
 %prep
-%setup -q -n %{name}
-cp %{SOURCE1} javacc
-cp %{SOURCE2} jjdoc
-cp %{SOURCE3} jjtree
+%setup -qc
+mv %{name}/* .; rmdir %{name}
+%patch0 -p1
+
+cp -p %{SOURCE1} javacc
+cp -p %{SOURCE2} jjdoc
+cp -p %{SOURCE3} jjtree
+
+# Remove binary information in the source tar
+rm lib/junit3.8.1/junit.jar
+%if %{without bootstrap}
+rm bootstrap/javacc.jar
+%endif
+
+find examples -type f | xargs %undos
+
+sed -i -e 's/source="1.4"/source="1.5"/g' src/org/javacc/{parser,jjdoc,jjtree}/build.xml
+
 mv www/doc .
 
 %build
+%if %{without bootstrap}
+# Use the bootstrap javacc.jar to generate some required
+# source java files. After these source files are generated we
+# remove the bootstrap jar and build the binary from source.
+jar=$(find-jar javacc)
+ln -sf $jar bootstrap/javacc.jar
+%endif
+
+%ant -f src/org/javacc/parser/build.xml parser-files
+%ant -f src/org/javacc/jjtree/build.xml tree-files
+
 required_jars="junit"
-export LC_ALL=en_US
-export CLASSPATH=$(/usr/bin/build-classpath $required_jars)
+export CLASSPATH=$(build-classpath $required_jars)
 
 %ant \
-	-Dversion=%{version} \
 	jar
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_javadir}
-install bin/lib/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
+cp -p bin/lib/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
 ln -s %{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+
 install -d $RPM_BUILD_ROOT%{_bindir}
-install javacc jjdoc jjtree $RPM_BUILD_ROOT%{_bindir}
-install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
-cp -pr examples $RPM_BUILD_ROOT%{_datadir}/%{name}
+install -p javacc jjdoc jjtree $RPM_BUILD_ROOT%{_bindir}
+
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -94,8 +125,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc LICENSE README
-%attr(755,root,root) %{_bindir}/*
-%{_javadir}/*.jar
+%attr(755,root,root) %{_bindir}/javacc
+%attr(755,root,root) %{_bindir}/jjdoc
+%attr(755,root,root) %{_bindir}/jjtree
+%{_javadir}/javacc-%{version}.jar
+%{_javadir}/javacc.jar
 
 %files manual
 %defattr(644,root,root,755)
@@ -103,4 +137,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files demo
 %defattr(644,root,root,755)
-%{_datadir}/%{name}
+%{_examplesdir}/%{name}-%{version}
