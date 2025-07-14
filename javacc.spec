@@ -72,7 +72,7 @@ Przykłady do JavaCC.
 %prep
 %setup -qc
 mv %{name}/* .; rmdir %{name}
-%patch0 -p1
+%patch -P0 -p1
 
 cp -p %{SOURCE1} javacc
 cp -p %{SOURCE2} jjdoc
